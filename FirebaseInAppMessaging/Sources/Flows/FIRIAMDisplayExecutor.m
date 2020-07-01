@@ -632,14 +632,19 @@
         }
 
         self.impressionRecorded = NO;
-        self.isMsgBeingDisplayed = YES;
 
-        FIRInAppMessagingDisplayMessage *displayMessage =
-            [self displayMessageWithMessageDefinition:message
-                                            imageData:imageData
-                                   landscapeImageData:landscapeImageData
-                                          triggerType:triggerType];
-        [self.messageDisplayComponent displayMessage:displayMessage displayDelegate:self];
+        NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
+        NSDictionary* userInfo = @{
+            @"titleText": message.renderData.contentData.titleText ?: [NSNull null],
+            @"bodyText": message.renderData.contentData.bodyText ?: [NSNull null],
+            @"actionButtonText": message.renderData.contentData.actionButtonText ?: [NSNull null],
+            @"actionURL": message.renderData.contentData.actionURL.absoluteString ?: [NSNull null],
+            @"parameters": message.appData ?: [NSNull null],
+            @"campaignId": message.renderData.messageID ?: [NSNull null],
+            @"campaignName": message.renderData.name ?: [NSNull null],
+        };
+      
+        [nc postNotificationName:@"IAM" object:nil userInfo:userInfo];
       }];
 }
 
