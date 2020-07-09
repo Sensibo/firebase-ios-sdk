@@ -655,6 +655,7 @@
         if ([self respondsToSelector:@selector(impressionDetectedForMessage:)]) {
           [self impressionDetectedForMessage:displayMessage];
         }
+        [self messageDismissed:displayMessage dismissType:FIRInAppMessagingDismissTypeUserTapClose];
       }];
 }
 
