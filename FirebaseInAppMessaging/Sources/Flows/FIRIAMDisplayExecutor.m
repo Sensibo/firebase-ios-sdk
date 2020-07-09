@@ -633,6 +633,12 @@
 
         self.impressionRecorded = NO;
 
+        FIRInAppMessagingDisplayMessage *displayMessage =
+            [self displayMessageWithMessageDefinition:message
+                                            imageData:imageData
+                                   landscapeImageData:landscapeImageData
+                                          triggerType:triggerType];
+
         NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
         NSDictionary* userInfo = @{
             @"titleText": message.renderData.contentData.titleText ?: [NSNull null],
@@ -643,8 +649,12 @@
             @"campaignId": message.renderData.messageID ?: [NSNull null],
             @"campaignName": message.renderData.name ?: [NSNull null],
         };
-      
+
         [nc postNotificationName:@"IAM" object:nil userInfo:userInfo];
+
+        if ([self respondsToSelector:@selector(impressionDetectedForMessage:)]) {
+          [self impressionDetectedForMessage:displayMessage];
+        }
       }];
 }
 
